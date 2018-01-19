@@ -6,8 +6,8 @@ use TicTacToe\Bot;
 
 class BotForTests extends Bot {
 
-    public function getMapPlayer() {
-        return $this->map_player;
+    public function getBoardStateMapped() {
+        return $this->board_state_mapped;
     }
 
     public function parseBoardState(array $boardState)

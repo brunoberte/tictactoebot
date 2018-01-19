@@ -4,7 +4,7 @@ namespace TicTacToe;
 
 class Bot implements MoveInterface
 {
-    private $map_won_positions = [
+    private $win_positions = [
         'first_row' => ['00', '01', '02'],
         'second_row' => ['10', '11', '12'],
         'third_row' => ['20', '21', '22'],
@@ -14,7 +14,7 @@ class Bot implements MoveInterface
         'diagonal_topleft' => ['00', '11', '22'],
         'diagonal_bottomleft' => ['02', '11', '20'],
     ];
-    protected $map_player = false;
+    protected $board_state_mapped = false;
     protected $playerUnits = ['X', 'O'];
 
     /**
@@ -57,14 +57,14 @@ class Bot implements MoveInterface
      */
     protected function checkGameState(array $boardState)
     {
-        if (!$this->map_player) {
+        if (!$this->board_state_mapped) {
             $this->parseBoardState($boardState);
         }
-        foreach ($this->map_won_positions as $position_key => $item) {
+        foreach ($this->win_positions as $position_key => $item) {
             foreach ($this->playerUnits as $playerUnit) {
                 $win = true;
                 foreach($item as $x) {
-                    if (!in_array($x, $this->map_player[$playerUnit])) {
+                    if (!in_array($x, $this->board_state_mapped[$playerUnit])) {
                         $win = false;
                     }
                 }
@@ -80,10 +80,10 @@ class Bot implements MoveInterface
      */
     protected function parseBoardState(array $boardState)
     {
-        $this->map_player = ['X' => [], 'O' => []];
+        $this->board_state_mapped = ['X' => [], 'O' => [], '' => []];
         foreach ($boardState as $row => $values) {
             foreach ($values as $column => $playerUnit) {
-                $this->map_player[$playerUnit][] = $row . $column;
+                $this->board_state_mapped[$playerUnit][] = $row . $column;
             }
         }
     }
@@ -124,18 +124,15 @@ class Bot implements MoveInterface
      */
     protected function calculateNextMove($boardState, $playerUnit)
     {
-        if (!$this->map_player) {
+        if (!$this->board_state_mapped) {
             $this->parseBoardState($boardState);
-        }
-
-        if (empty($this->map_player[''])) {
-            throw new NoMoreMovesException('No more moves');
         }
 
         $possible_moves = $this->getPossibleMovesList();
         if (empty($possible_moves)) {
-            throw new NoMoreMovesException();
+            throw new NoMoreMovesException('No more moves');
         }
+
         $possible_moves = $this->setMovesWeight($possible_moves, $playerUnit);
         $possible_moves = $this->sortMoves($possible_moves);
 
@@ -144,7 +141,7 @@ class Bot implements MoveInterface
         $column = (int)$selected_move['move'][1];
         $row = (int)$selected_move['move'][0];
         $boardState[$row][$column] = $playerUnit;
-        $this->map_player[$playerUnit][] = $selected_move['move'];
+        $this->board_state_mapped[$playerUnit][] = $selected_move['move'];
         $this->checkGameState($boardState);
 
         return [$column, $row, $playerUnit];
@@ -160,7 +157,7 @@ class Bot implements MoveInterface
                 'move' => $v,
                 'weight' => 0,
             ];
-        }, $this->map_player['']);
+        }, $this->board_state_mapped['']);
     }
 
     /**
@@ -197,10 +194,10 @@ class Bot implements MoveInterface
         // set weight for possible moves
         $opponentUnit = $playerUnit == 'X' ? 'O' : 'X';
         foreach ($possible_moves as $k => $v) {
-            foreach ($this->map_won_positions as $position_key => $item) {
+            foreach ($this->win_positions as $position_key => $item) {
                 // if there is any position occupied by the opponent, discard this position
                 foreach($item as $x) {
-                    if (in_array($x, $this->map_player[$opponentUnit])) {
+                    if (in_array($x, $this->board_state_mapped[$opponentUnit])) {
                         continue 2;
                     }
                 }
@@ -235,12 +232,12 @@ class Bot implements MoveInterface
      */
     private function checkWin($move, $playerUnit)
     {
-        $boardState_with_current_move = array_merge($this->map_player[$playerUnit], [$move]);
-        sort($boardState_with_current_move);
-        foreach ($this->map_won_positions as $position_key => $item) {
+        $player_moves = array_merge($this->board_state_mapped[$playerUnit], [$move]);
+        sort($player_moves);
+        foreach ($this->win_positions as $position_key => $item) {
             $win = true;
             foreach($item as $x) {
-                if (!in_array($x, $boardState_with_current_move)) {
+                if (!in_array($x, $player_moves)) {
                     $win = false;
                 }
             }

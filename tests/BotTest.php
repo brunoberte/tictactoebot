@@ -73,7 +73,7 @@ class BotTest extends TestCase
         foreach ($scenarios as $scenario) {
             $bot = new BotForTests();
             $bot->parseBoardState($scenario['boardState']);
-            $this->assertEquals($scenario['expectedResult'], $bot->getMapPlayer());
+            $this->assertEquals($scenario['expectedResult'], $bot->getBoardStateMapped());
         }
     }
 
