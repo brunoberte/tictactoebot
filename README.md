@@ -1,6 +1,9 @@
 #TicTacToe Bot
 
-##Instalation
+##Prerequisites
+- PHP 7.1
+
+##Installation
 ```
 composer install
 ```
