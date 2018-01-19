@@ -1,0 +1,26 @@
+{
+    "name": "brunoberte/tictactoe",
+    "description": "TicTacToe bot via API",
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "authors": [
+        {
+            "name": "Bruno Berté",
+            "email": "brunoberte@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TicTacToe\\": "src/",
+            "TestTicTacToe\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "server": "php -S localhost:3080 -t public"
+    }
+}
