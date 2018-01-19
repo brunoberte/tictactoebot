@@ -1,0 +1,17 @@
+
+.game-container {
+    display: block;
+    width: 350px;
+    margin: 0 auto;
+}
+
+.board .btn {
+    display: inline-block;
+    width: 30%;
+    height: 80px;
+    border: 1px solid #333;
+    font-size: 40px;
+}
+.board p {
+    margin: 3px;
+}
