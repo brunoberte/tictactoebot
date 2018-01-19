@@ -1,5 +1,7 @@
 #TicTacToe Bot
 
+![Screenshot](https://raw.githubusercontent.com/brunoberte/tictactoebot/master/screenshot.png)
+
 ##Prerequisites
 - PHP 7.1
 
