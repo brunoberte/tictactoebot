@@ -9,5 +9,11 @@ composer install
 ```
 composer run server
 ```
-Open http://localhost:3000
+Open http://localhost:3080
+
+
+### Running tests
+```
+composer run test
+```
 
